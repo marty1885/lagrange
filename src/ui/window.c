@@ -60,6 +60,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include "stb_image.h"
 #include "stb_image_resize2.h"
 
+#define QOI_IMPLEMENTATION
+#define QOI_NO_STDIO
+#include "qoi.h"
+
 static iWindow *    theWindow_;
 static iMainWindow *theMainWindow_;
 

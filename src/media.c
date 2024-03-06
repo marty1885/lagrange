@@ -23,12 +23,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include "media.h"
 #include "gmdocument.h"
 #include "gmrequest.h"
+#include "the_Foundation/string.h"
 #include "ui/window.h"
 #include "ui/paint.h" /* size_SDLTexture */
 #include "audio/player.h"
 #include "app.h"
 #include "stb_image.h"
 #include "stb_image_resize2.h"
+#include "qoi.h"
 
 #if defined (LAGRANGE_ENABLE_WEBP)
 #   include <webp/decode.h>
@@ -141,6 +143,15 @@ void makeTexture_GmImage(iGmImage *d) {
 #if defined (LAGRANGE_ENABLE_WEBP)
         imgData = WebPDecodeRGBA(constData_Block(data), size_Block(data), &d->size.x, &d->size.y);
 #endif
+    }
+    else if(cmp_String(&d->props.mime, "image/qoi") == 0
+        || cmp_String(&d->props.mime, "image/x-qoi") == 0) {
+        qoi_desc desc;
+        imgData = qoi_decode(constData_Block(data), size_Block(data), &desc, 4);
+        if(imgData) {
+            d->size.x = desc.width;
+            d->size.y = desc.height;
+        }
     }
     else {
         imgData = stbi_load_from_memory(
